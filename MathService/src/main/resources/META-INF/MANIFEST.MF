@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Bnd-LastModified: 1450034462192
+Build-Jdk: 1.8.0_66
+Built-By: posicks
+Bundle-Activator: net.posick.math.impl.Activator
+Bundle-Blueprint: OSGI-INF/blueprint/cxf.xml
+Bundle-ManifestVersion: 2
+Bundle-Name: Math Microservice
+Bundle-SymbolicName: math-service
+Bundle-Version: 1.0.0
+Created-By: Apache Maven Bundle Plugin
+Export-Package: net.posick.math;version="1.0.0",net.posick.math.fibonacc
+ i;version="1.0.0";uses:="javax.xml.bind.annotation",net.posick.math.imp
+ l;version="1.0.0";uses:="net.posick.math,org.osgi.framework",net.posick
+ .math.impl.fibonacci;version="1.0.0";uses:="net.posick.math,net.posick.
+ math.fibonacci",net.posick.math.impl.fibonacci.net.rest;version="1.0.0"
+ ;uses:="javax.ws.rs,javax.ws.rs.core,net.posick.math.fibonacci"
+Export-Service: net.posick.math.fibonacci.Fibonacci
+Import-Package: org.apache.cxf.transport.common.gzip;version="3.1.4",jav
+ ax.ws.rs;version="[2.0,3)",javax.ws.rs.core;version="[2.0,3)",javax.xml
+ .bind.annotation,net.posick.math;version="[1.0,2)",net.posick.math.fibo
+ nacci;version="[1.0,2)",net.posick.math.impl;version="[1.0,2)",org.apac
+ he.cxf.jaxrs.provider,org.apache.cxf.jaxrs.provider.json,org.osgi.frame
+ work;version="[1.8,2)",org.osgi.service.blueprint;version="[1.0.0,2.0.0
+ )",org.apache.cxf.transport;version="3.1.4"
+Originally-Created-By: Apache Maven Bundle Plugin
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Tool: Bnd-3.0.0.201509101326
+Web-ContextPath: /math/
+Webapp-Context: /math/

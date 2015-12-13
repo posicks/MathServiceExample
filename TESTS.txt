@@ -1,0 +1,35 @@
+#############################################
+##      Testing the Fibonacci Service      ##
+#############################################
+
+The Math service has 2 primary methods of testing it's functionality. The first is via
+POJO Units build into the build process of the Math Service Client, the second being through
+the execution of the test programs created to test the service manually.
+
+# Build Testing
+
+* Run mvn test or mvn Install
+
+# Client executables
+
+To test the capabilities of the service run the following command in the root
+of the Math Service Client project/module ${PROJECT_HOME}/MathServiceExample/MathServiceClient.
+
+To test the JSON capabilities
+* java -cp target/math-service-client-1.0.0.jar net.posick.math.SimpleJSONClient
+* java -cp target/math-service-client-1.0.0.jar net.posick.math.SimpleJSONClient -p start=100 -p length=10
+
+To test the XML capabilities
+* java -cp target/math-service-client-1.0.0.jar net.posick.math.SimpleHTTPClient
+* java -cp target/math-service-client-1.0.0.jar net.posick.math.SimpleHTTPClient -p start=100 -p length=10
+
+To test both JSON & XML capabilities (Runs the 2 tests above)
+* java -jar target/math-service-client-1.0.0.jar
+* java -jar target/math-service-client-1.0.0.jar -p start=100 -p length=10
+
+
+Please not that the command line for all 3 commands is:
+[url] [-p | --param ${key=value}] [-u | --url ${baseURL}]
+
+For example:
+${JAVA_COMMAND} http://localhost:8181/cxf/math/fibonacci -p start=10000000 -p length=10

@@ -1,0 +1,33 @@
+######################################
+##  Apache Karaf Install Procedure  ##
+######################################
+
+Variables:
+  $JAVA_HOME = (MacOSX: "$(/usr/libexec/java_home -v 1.8)"; Windows & Linux: (JRE 1.8 Dir))
+  $KARAF_HOME = (Apache Karaf 4.0.3 directory)
+  $INSTANCE_NAME = "emc"
+  $KARAF_SSH_PORT = << $KARAF_HOME/instances/instance.properties(ssh.port)
+  $PROJECT_DIR = (Development or Temp Directory in which to build the project)
+
+
+1. Download Apache Karaf 4.0.3
+2. Unpack Apache Karaf 4.0.3 to $KARAF_HOME
+3. Set $JAVA_HOME environment variable to JRE 1.8 or higher
+4. Execute the following sequence of commands:
+?    $ cd $PROJECT_DIR
+?    $ git checkout net.posick.Fibonacci $PROJECT_DIR
+?    $ mvn install
+    $ cd $KARAF_HOME
+    $ bin/karaf
+
+5. Execute the following Karaf commands: 
+   (NOTE: Karaf restarts after some feature installs; reconnect ssh in such cases)
+    karaf@root()> instance:create $INSTANCE_NAME
+    karaf@root()> instance:start $INSTANCE_NAME
+    karaf@root()> instance:connect $INSTANCE_NAME
+      Password: karaf
+    karaf@$INSTANCE_NAME()> feature:repo-add cxf 3.1.4
+    karaf@$INSTANCE_NAME()> feature:install http pax-cdi-1.2-web-weld
+    karaf@$INSTANCE_NAME()> feature:install cxf/3.1.4 cxf-jaxrs-cdi/3.1.4 cxf-http-client/3.1.4
+    karaf@$INSTANCE_NAME()> feature:install cxf-commands cxf-tools
+    karaf@$INSTANCE_NAME()> bundle:install -s mvn:net.posick.math/fibonacci/1.0.0

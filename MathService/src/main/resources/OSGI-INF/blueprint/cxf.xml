@@ -1,0 +1,65 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xmlns:cxf="http://cxf.apache.org/blueprint/core"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+             http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
+             ">
+ 
+ 	<!-- Begin standard OSGi configuration -->
+	<bean id="fibonacciBean" activation="eager" class="net.posick.math.impl.fibonacci.FibonacciBean">
+		<argument ref="fibonacciGenerator" />
+	</bean>
+	
+	<bean id="fibonacciStore" activation="eager" class="net.posick.math.impl.fibonacci.InMemoryFibonacciStore">
+		<argument value="50000" />
+	</bean>
+	
+	<!--
+	 Fibonacci Generators: The Sequential Generator is Slow and requires a series of pre-calculated values for performance. 
+                           The Matrix Generator uses Matrix pow(n) to quickly calculate the Fibonacci for an index n.
+    -->
+	<!-- bean id="fibonacciGenerator" activation="eager" class="net.posick.math.impl.fibonacci.SequentialFibonacciGenerator">
+		<property name="fibonacciStore" ref="fibonacciStore" />
+	</bean -->
+	<bean id="fibonacciGenerator" activation="eager" class="net.posick.math.impl.fibonacci.MatrixFibonacciGenerator" />
+	
+	<!-- JAX-RS Exposure of Fibonacci service -->
+	<bean id="fibonacciJAXRS" activation="eager" class="net.posick.math.impl.fibonacci.net.rest.FibonacciJAXRS" depends-on="fibonacciBean">
+		<argument ref="fibonacciBean" />
+		<property name="cacheMaxAge" value="30000" />
+	</bean>
+ 	<!-- End standard OSGi configuration -->
+
+	
+ 	<!-- Begin CXF Exposure configuration -->
+	<bean id="compressGZIPFeature" class="org.apache.cxf.transport.common.gzip.GZIPFeature" />
+	<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
+		<property name="ignoreNamespaces" value="true"/>
+		<property name="namespaceMap">
+			<map>
+				<entry key="http://posick.net/math" value="math" />
+			</map>
+		</property>
+	</bean>	
+	<bean id="jaxbProvider" class="org.apache.cxf.jaxrs.provider.JAXBElementProvider"/>
+	
+	<cxf:bus />
+    
+	<jaxrs:server id="mathService" address="/math">
+	    <jaxrs:features>
+      		<ref component-id="compressGZIPFeature" />
+	        <cxf:logging/>
+	    </jaxrs:features>
+		<jaxrs:serviceBeans>
+	        <ref component-id="fibonacciJAXRS" />
+	    </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref component-id="jaxbProvider"/>
+            <ref component-id="jsonProvider"/>
+        </jaxrs:providers>
+	</jaxrs:server>
+ 	<!-- End CXF Exposure configuration -->
+</blueprint>
