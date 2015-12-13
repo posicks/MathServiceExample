@@ -17,23 +17,38 @@ protocols: [ HTTP ]
                 {
                   "$schema": "http://posick.net/math",
                   "type": "object",
-                  "required": [ "Fibonacci", "start", "length" ],
+                  "required": [ "FibonacciSequence" ],
                   "properties":
                   {
-                    "Fibonacci":
-                    {
-                      "type": "array",
-                      "items": { "type": "integer" }
-                    },
-                    "start": { "type": "integer" },
-                    "length": { "type": "integer" }
-                  }
+                    "math.FibonacciSequence":
+	                {
+	                  "type": "object",
+	                  "required": [ "Fibonacci", "@start", "@length", "@complete", "@empty" ],
+	                  "properties":
+	                  {
+	                    "@start": { "type": "integer" },
+	                    "@length": { "type": "integer" },
+	                    "@complete": { "type": "integer" },
+	                    "@empty": { "type": "integer" },
+	                    "Fibonacci":
+	                    {
+	                      "type": "array",
+	                      "items": { "type": "integer" }
+	                    }
+	                  }
+	                }
+	              }
                 }
               example: |
                 {
-                  "Fibonacci": [ 0, 1, 1, 2, 3 ],
-                  "start": 0,
-                  "length": 5
+                  "math.FibonacciSequence":
+                  {
+                    "math.Fibonacci": [ 0, 1, 1, 2, 3 ],
+                    "@start": 0,
+                    "@length": 5,
+                    "@complete": true,
+                    "@empty": false
+                  }
                 }
             application/xml:
               schema: |
@@ -55,13 +70,15 @@ protocols: [ HTTP ]
                         <xs:element ref="tns:Fibonacci" minOccurs="1" maxOccurs="unbounded" />
                         <xs:attribute name="start" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="1" />
                         <xs:attribute name="length" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="1" />
+                        <xs:attribute name="complete" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="1" />
+                        <xs:attribute name="empty" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="1" />
                       </xs:sequence>
                     </xs:complexType>
 
                     <xs:element name="FibonacciSequence" ref="tns:FibonacciSequence" />
                 </xs:schema>
               example: |
-                <FibonacciSequence start="0" length="5" xmlns="http://posick.net/math">
+                <FibonacciSequence xmlns="http://posick.net/math" start="0" length="5" complete="true" empty="false">
                   <Fibonacci>0</Fibonacci>
                   <Fibonacci>1</Fibonacci>
                   <Fibonacci>1</Fibonacci>
